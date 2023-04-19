@@ -10,7 +10,7 @@ class BigText extends StatefulWidget {
     Key? key,
     this.color,
     required this.text,
-    this.size = 20,
+    this.size = 30,
     this.overFlow = TextOverflow.ellipsis,
   }) : super(key: key);
 
@@ -23,6 +23,7 @@ class _BigTextState extends State<BigText> {
   Widget build(BuildContext context) {
     return Text(
       widget.text,
+      maxLines: 1,
       style: TextStyle(
           fontFamily: 'Roboto',
           color: widget.color,
