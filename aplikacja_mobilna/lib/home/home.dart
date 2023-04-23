@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:aplikacja_mobilna/widgets/big_text.dart';
-import 'package:aplikacja_mobilna/widgets/small_text.dart';
 
 class RecipeListPage extends StatefulWidget {
   const RecipeListPage({super.key});
@@ -14,36 +12,6 @@ class _RecipeListPageState extends State<RecipeListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-          child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: BigText(
-              text: 'Menu',
-            ),
-          ),
-          ListTile(
-            title: const SmallText(
-              text: 'Item 1',
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const SmallText(
-              text: 'Item 2',
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      )),
       appBar: AppBar(
         title: const Text('YummyYummy Recipes'),
         actions: [
@@ -75,8 +43,8 @@ class _RecipeListPageState extends State<RecipeListPage> {
               itemCount: 10, // replace with actual number of recipes
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: Image.network(
-                      'https://via.placeholder.com/150x150.png?text=Recipe+Image'),
+                  //  leading: Image.network(
+                  //     'https://via.placeholder.com/150x150.png?text=Recipe+Image'),
                   title: const Text('Recipe Title'),
                   subtitle: const Text('Preparation time: 30 minutes'),
                   trailing: ElevatedButton(

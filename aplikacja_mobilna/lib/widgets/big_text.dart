@@ -11,7 +11,7 @@ class BigText extends StatefulWidget {
     this.color,
     required this.text,
     this.size = 30,
-    this.overFlow = TextOverflow.ellipsis,
+    this.overFlow = TextOverflow.ellipsis, required style,
   }) : super(key: key);
 
   @override

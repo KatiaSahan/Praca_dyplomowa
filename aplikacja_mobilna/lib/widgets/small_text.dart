@@ -11,7 +11,7 @@ class SmallText extends StatefulWidget {
       this.color,
       required this.text,
       this.size = 15,
-      this.height = 1.2})
+      this.height = 1.2, required TextStyle style})
       : super(key: key);
 
   @override

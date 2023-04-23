@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aplikacja_mobilna/home/home.dart';
+import 'package:aplikacja_mobilna/home/sidebar/sidebar_layor.dart';
 
 //import 'package:aplikacja_mobilna/main.dart';
 void main() {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const RecipeListPage(), // odwołanie do klasy MainFoodPage
+      home: const SideBarLayor(), // odwołanie do klasy LoginPage
     );
   }
 }
