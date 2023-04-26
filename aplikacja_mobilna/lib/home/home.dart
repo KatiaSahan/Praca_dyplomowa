@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 
-class RecipeListPage extends StatefulWidget {
+class RecipeListPage extends StatelessWidget {
   const RecipeListPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _RecipeListPageState createState() => _RecipeListPageState();
-}
-
-class _RecipeListPageState extends State<RecipeListPage> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(),
+      ),
       appBar: AppBar(
-        title: const Text('YummyYummy Recipes'),
+        title: const Text('        YummyYummy'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
