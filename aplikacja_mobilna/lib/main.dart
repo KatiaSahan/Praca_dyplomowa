@@ -14,7 +14,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
-      home: const RecipeListPage(), // odwołanie do klasy LoginPage
-    );
+      home: const RecipeListPage(),
+      // routes: <String, WidgetBuilder>{
+      //    "/a": (BuildContext context) => const Sniadania(),
+      // }
+    ); // odwołanie do klasy LoginPage
   }
 }

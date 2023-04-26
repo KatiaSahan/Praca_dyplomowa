@@ -1,3 +1,7 @@
+import 'package:aplikacja_mobilna/menu/desert.dart';
+import 'package:aplikacja_mobilna/menu/kolacja.dart';
+import 'package:aplikacja_mobilna/menu/obiad.dart';
+import 'package:aplikacja_mobilna/menu/sniadania.dart';
 import 'package:flutter/material.dart';
 
 class RecipeListPage extends StatelessWidget {
@@ -7,10 +11,62 @@ class RecipeListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: ListView(),
+        // меню бокове
+        child: ListView(
+          children: <Widget>[
+            const UserAccountsDrawerHeader(
+              accountName: Text("Marina Clark"),
+              accountEmail: Text("marinaclark@gmail.com"),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Color.fromARGB(255, 0, 229, 255),
+                child: Text("M"),
+              ),
+            ),
+            ListTile(
+                title: const Text("Sniadania"),
+                trailing: const Icon(Icons.bakery_dining_outlined),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const Sniadania("Sniadania")));
+                }),
+            ListTile(
+                title: const Text("Obiad"),
+                trailing: const Icon(Icons.lunch_dining_outlined),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => const Obiad("Obiad")));
+                }),
+            ListTile(
+                title: const Text("Kolacja"),
+                trailing: const Icon(Icons.dinner_dining),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const Kolacja("Kolacja")));
+                }),
+            ListTile(
+                title: const Text("Desert"),
+                trailing: const Icon(Icons.cake),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const Desert("Desert")));
+                }),
+            const Divider(),
+            const ListTile(
+              title: Text("Setting"),
+              trailing: Icon(Icons.settings),
+            ),
+          ],
+        ),
       ),
       appBar: AppBar(
-        title: const Text('        YummyYummy'),
+        title: const Text('YummyYummy'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
