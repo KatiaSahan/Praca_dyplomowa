@@ -38,12 +38,15 @@ class _LoginPageState extends State<LoginPage> {
                     height: 50,
                   ),
                   Container(
-                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                      BoxShadow(
-                          blurRadius: 10,
-                          offset: const Offset(1, 1),
-                          color: Colors.grey.withOpacity(0.4))
-                    ]),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: 10,
+                              offset: const Offset(1, 1),
+                              color: Colors.grey.withOpacity(0.4))
+                        ]),
                     child: TextField(
                       decoration: InputDecoration(
                           focusedBorder: const OutlineInputBorder(

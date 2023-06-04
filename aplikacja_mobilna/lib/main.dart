@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'home/home.dart';
+
+import 'home/login_page.dart';
 
 void main() => runApp(const MyApp());
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
-      home: const RecipeListPage(),
+      home: const LoginPage(), //RecipeListPage(),
       // routes: <String, WidgetBuilder>{
       //    "/a": (BuildContext context) => const Sniadania(),
       // }

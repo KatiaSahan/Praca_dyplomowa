@@ -1,6 +1,7 @@
 import 'package:aplikacja_mobilna/menu/desert.dart';
 import 'package:aplikacja_mobilna/menu/kolacja.dart';
 import 'package:aplikacja_mobilna/menu/obiad.dart';
+import 'package:aplikacja_mobilna/menu/settings.dart';
 import 'package:aplikacja_mobilna/menu/sniadania.dart';
 import 'package:flutter/material.dart';
 
@@ -58,10 +59,15 @@ class RecipeListPage extends StatelessWidget {
                           const Desert("Desert")));
                 }),
             const Divider(),
-            const ListTile(
-              title: Text("Setting"),
-              trailing: Icon(Icons.settings),
-            ),
+            ListTile(
+                title: const Text("Settings"),
+                trailing: const Icon(Icons.settings),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const Settings("Settings")));
+                }),
           ],
         ),
       ),
