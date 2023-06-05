@@ -3,11 +3,18 @@ import 'package:aplikacja_mobilna/menu/kolacja.dart';
 import 'package:aplikacja_mobilna/menu/obiad.dart';
 import 'package:aplikacja_mobilna/menu/settings.dart';
 import 'package:aplikacja_mobilna/menu/sniadania.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class RecipeListPage extends StatelessWidget {
-  const RecipeListPage({super.key});
+class RecipeListPage extends StatefulWidget {
+  const RecipeListPage({Key? key}) : super(key: key);
 
+  @override
+  State<RecipeListPage> createState() => _RecipeListPageState();
+}
+
+class _RecipeListPageState extends State<RecipeListPage> {
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,13 +22,14 @@ class RecipeListPage extends StatelessWidget {
         // меню бокове
         child: ListView(
           children: <Widget>[
-            const UserAccountsDrawerHeader(
-              accountName: Text("Marina Clark"),
-              accountEmail: Text("marinaclark@gmail.com"),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Color.fromARGB(255, 0, 229, 255),
-                child: Text("M"),
+            UserAccountsDrawerHeader(
+              //accountName: const Text("Marina Clark"),
+              accountEmail: Text(user.email!),
+              currentAccountPicture: const CircleAvatar(
+                backgroundColor: Color.fromARGB(255, 10, 0, 116),
+                child: Text("C"),
               ),
+              accountName: null,
             ),
             ListTile(
                 title: const Text("Sniadania"),
