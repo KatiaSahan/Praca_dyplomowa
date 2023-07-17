@@ -1,3 +1,4 @@
+import 'package:aplikacja_mobilna/home/add_recipe_page.dart';
 import 'package:aplikacja_mobilna/menu/desert.dart';
 import 'package:aplikacja_mobilna/menu/kolacja.dart';
 import 'package:aplikacja_mobilna/menu/obiad.dart';
@@ -15,6 +16,7 @@ class RecipeListPage extends StatefulWidget {
 
 class _RecipeListPageState extends State<RecipeListPage> {
   final user = FirebaseAuth.instance.currentUser!;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,14 +84,15 @@ class _RecipeListPageState extends State<RecipeListPage> {
       appBar: AppBar(
         title: const Text('YummyYummy'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {},
-          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddRecipePage()),
+              );
+            },
+            child: const Text('Додати рецепт'),
+          )
         ],
       ),
       body: Column(
@@ -110,8 +113,6 @@ class _RecipeListPageState extends State<RecipeListPage> {
               itemCount: 10, // replace with actual number of recipes
               itemBuilder: (context, index) {
                 return ListTile(
-                  //  leading: Image.network(
-                  //     'https://via.placeholder.com/150x150.png?text=Recipe+Image'),
                   title: const Text('Recipe Title'),
                   subtitle: const Text('Preparation time: 30 minutes'),
                   trailing: ElevatedButton(
