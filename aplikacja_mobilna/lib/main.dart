@@ -33,9 +33,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const MainPage(),
-      // routes: <String, WidgetBuilder>{
-      //    "/a": (BuildContext context) => const Sniadania(),
-      // }
-    ); // odwołanie do klasy LoginPage
+    );
   }
 }
