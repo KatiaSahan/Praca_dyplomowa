@@ -5,13 +5,21 @@ import '../models/recipe_model.dart';
 
 class RecipeListWidget extends StatelessWidget {
   final DatabaseReference recipeRef = FirebaseDatabase.instance.reference().child('recipes');
+  final String recipeType;
+
+  RecipeListWidget({required this.recipeType});
+
+  Query getRecipesQuery() {
+    return recipeRef.orderByChild('recipeType').equalTo(recipeType);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: FirebaseAnimatedList(
-        query: recipeRef,
-        itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
+        query: getRecipesQuery(),
+        itemBuilder: (BuildContext context, DataSnapshot snapshot,
+            Animation<double> animation, int index) {
           Map<String, dynamic> recipeData = snapshot.value;
           Recipe recipe = Recipe.fromJson(recipeData);
           return ListTile(

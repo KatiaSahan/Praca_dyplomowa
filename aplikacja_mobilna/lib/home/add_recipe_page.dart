@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import '../models/recipe_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+import 'home.dart';
 
 class AddRecipePage extends StatefulWidget {
   const AddRecipePage({Key? key}) : super(key: key);
@@ -14,20 +18,16 @@ class AddRecipePage extends StatefulWidget {
 
 class _AddRecipePageState extends State<AddRecipePage> {
   final TextEditingController titleController = TextEditingController();
-
-  final TextEditingController descriptionController = TextEditingController();
-
   final TextEditingController ingredientsController = TextEditingController();
-
   final TextEditingController instructionsController = TextEditingController();
-
-  final TextEditingController photoUrlController = TextEditingController();
 
   final DatabaseReference recipeRef =
       FirebaseDatabase.instance.ref().child('recipes');
 
   File? _selectedImage;
   String? uploadedImageUrl;
+
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void _selectImage() async {
     final ImagePicker picker = ImagePicker();
@@ -42,20 +42,16 @@ class _AddRecipePageState extends State<AddRecipePage> {
   Future<void> uploadImage() async {
     if (_selectedImage == null) return;
 
-    // Згенерувати унікальне ім'я файлу для завантаженої фотографії
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
 
-    // Отримати посилання на Firebase Storage
     firebase_storage.Reference storageRef = firebase_storage
         .FirebaseStorage.instance
         .ref()
         .child('recipe_images')
         .child(fileName);
 
-    // Завантажити файл зображення в Firebase Storage
     await storageRef.putFile(_selectedImage!);
 
-    // Отримати посилання на завантажену фотографію
     String downloadURL = await storageRef.getDownloadURL();
 
     setState(() {
@@ -66,73 +62,107 @@ class _AddRecipePageState extends State<AddRecipePage> {
   void addRecipe(Recipe recipe) {
     recipe.photoUrl =
         uploadedImageUrl ?? ''; // Встановлюємо URL завантаженої фотографії
-    recipeRef.push().set(recipe.toJson());
+
+    // Збереження рецепту в базу даних Firebase
+    DatabaseReference newRecipeRef = recipeRef.push();
+    newRecipeRef.set(recipe.toJson());
+    // Отримуємо ключ рецепту, щоб встановити фотографію відповідного об'єкту
+    String recipeKey = newRecipeRef.key ?? '';
+
+    // Оновлюємо об'єкт рецепту з фотографією
+    newRecipeRef.update({'photoUrl': uploadedImageUrl});
+
+    // Завантаження фотографії до Firebase Storage з використанням ключа рецепту
+    String fileName = '${recipeKey}_photo';
+    firebase_storage.Reference storageRef = firebase_storage
+        .FirebaseStorage.instance
+        .ref()
+        .child('recipe_images')
+        .child(fileName);
+    storageRef.putFile(_selectedImage!);
+  }
+
+  void saveRecipe() async {
+    List<String> ingredients = ingredientsController.text
+        .split(',')
+        .map((ingredient) => ingredient.trim())
+        .toList();
+
+    await uploadImage();
+
+    Recipe newRecipe = Recipe(
+      title: titleController.text,
+      ingredients: ingredients,
+      instructions: instructionsController.text,
+      photoUrl: uploadedImageUrl ?? '',
+      recipeType: '',
+    );
+    addRecipe(newRecipe);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const RecipeListPage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Додати рецепт'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(
-                labelText: 'Назва рецепту',
+    return Navigator(
+      key: navigatorKey,
+      onGenerateRoute: (routeSettings) {
+        return MaterialPageRoute(
+          builder: (context) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Додати рецепт'),
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: ingredientsController,
-                  decoration: const InputDecoration(
-                    hintText: 'Введіть інгредієнти через кому',
-                  ),
+              body: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Назва рецепту',
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          controller: ingredientsController,
+                          decoration: const InputDecoration(
+                            hintText: 'Введіть інгредієнти через кому',
+                          ),
+                        ),
+                      ],
+                    ),
+                    TextField(
+                      controller: instructionsController,
+                      decoration: const InputDecoration(
+                        labelText: 'Інструкції',
+                      ),
+                    ),
+                    if (_selectedImage != null)
+                      Image.file(
+                        _selectedImage!,
+                        height: 150,
+                      ),
+                    ElevatedButton(
+                      onPressed: _selectImage,
+                      child: const Text('Вибрати фото'),
+                    ),
+                    ElevatedButton(
+                      onPressed: saveRecipe,
+                      child: const Text('Зберегти рецепт'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            TextField(
-              controller: instructionsController,
-              decoration: const InputDecoration(
-                labelText: 'Інструкції',
               ),
-            ),
-            if (_selectedImage != null)
-              Image.file(
-                _selectedImage!,
-                height: 150,
-              ),
-            ElevatedButton(
-              onPressed: _selectImage,
-              child: const Text('Вибрати фото'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                List<String> ingredients = ingredientsController.text
-                    .split(',')
-                    .map((ingredient) => ingredient.trim())
-                    .toList();
-                Recipe newRecipe = Recipe(
-                  title: titleController.text,
-                  ingredients: ingredients,
-                  instructions: instructionsController.text,
-                  photoUrl: '',
-                );
-                addRecipe(newRecipe);
-                // Додайте логіку для збереження рецепту у базу даних або іншу необхідну дію
-                Navigator.pop(
-                    context); // Закриття сторінки додавання рецепту після збереження
-              },
-              child: const Text('Зберегти рецепт'),
-            ),
-          ],
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }

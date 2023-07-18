@@ -5,7 +5,10 @@ import 'package:aplikacja_mobilna/menu/obiad.dart';
 import 'package:aplikacja_mobilna/menu/settings.dart';
 import 'package:aplikacja_mobilna/menu/sniadania.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class RecipeListPage extends StatefulWidget {
   const RecipeListPage({Key? key}) : super(key: key);
@@ -16,6 +19,18 @@ class RecipeListPage extends StatefulWidget {
 
 class _RecipeListPageState extends State<RecipeListPage> {
   final user = FirebaseAuth.instance.currentUser!;
+  final DatabaseReference recipeRef =
+      FirebaseDatabase.instance.ref().child('recipes');
+  Query getRecipesQuery(String recipeType) {
+    return recipeRef.orderByChild('recipeType').equalTo(recipeType);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Ініціалізуємо Firebase
+    Firebase.initializeApp();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +54,7 @@ class _RecipeListPageState extends State<RecipeListPage> {
                 onTap: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const Sniadania("Sniadania")));
+                      builder: (BuildContext context) => const Sniadania()));
                 }),
             ListTile(
                 title: const Text("Obiad"),
@@ -91,7 +105,7 @@ class _RecipeListPageState extends State<RecipeListPage> {
                 MaterialPageRoute(builder: (context) => const AddRecipePage()),
               );
             },
-            child: const Text('Додати рецепт'),
+            child: const Text('+'),
           )
         ],
       ),
@@ -109,17 +123,26 @@ class _RecipeListPageState extends State<RecipeListPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 10, // replace with actual number of recipes
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: const Text('Recipe Title'),
-                  subtitle: const Text('Preparation time: 30 minutes'),
-                  trailing: ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('View'),
-                  ),
-                );
+            child: FirebaseAnimatedList(
+              query: recipeRef,
+              itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                  Animation<double> animation, int index) {
+                // Отримати дані рецепту зі снапшота
+                final recipeData = snapshot.value as Map<dynamic, dynamic>?;
+                if (recipeData != null) {
+                  // Створити віджет для відображення рецепту
+                  return ListTile(
+                    title: Text(recipeData['title'] ?? ''),
+                    leading: Image.network(recipeData['photoUrl'] ?? ''),
+                    trailing: ElevatedButton(
+                      onPressed: () {
+                        // Додайте код для переходу до сторінки з деталями рецепту
+                      },
+                      child: const Text('View'),
+                    ),
+                  );
+                }
+                return const SizedBox(); // Повернути пустий віджет як заглушку, якщо дані недоступні
               },
             ),
           ),
