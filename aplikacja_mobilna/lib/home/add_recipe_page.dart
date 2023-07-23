@@ -20,7 +20,8 @@ class _AddRecipePageState extends State<AddRecipePage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController ingredientsController = TextEditingController();
   final TextEditingController instructionsController = TextEditingController();
-
+  String? selectedRecipeType; // Обраний тип рецепту
+  final List<String> recipeTypes = ['Sniadania', 'Obiad', 'Kolacja', 'Desert'];
   final DatabaseReference recipeRef =
       FirebaseDatabase.instance.ref().child('recipes');
 
@@ -141,6 +142,23 @@ class _AddRecipePageState extends State<AddRecipePage> {
                       controller: instructionsController,
                       decoration: const InputDecoration(
                         labelText: 'Інструкції',
+                      ),
+                    ),
+                    DropdownButtonFormField<String>(
+                      value: selectedRecipeType,
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedRecipeType = newValue;
+                        });
+                      },
+                      items: recipeTypes.map((type) {
+                        return DropdownMenuItem<String>(
+                          value: type,
+                          child: Text(type),
+                        );
+                      }).toList(),
+                      decoration: const InputDecoration(
+                        labelText: 'Тип рецепту',
                       ),
                     ),
                     if (_selectedImage != null)

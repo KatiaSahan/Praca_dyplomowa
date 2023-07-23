@@ -21,9 +21,6 @@ class _RecipeListPageState extends State<RecipeListPage> {
   final user = FirebaseAuth.instance.currentUser!;
   final DatabaseReference recipeRef =
       FirebaseDatabase.instance.ref().child('recipes');
-  Query getRecipesQuery(String recipeType) {
-    return recipeRef.orderByChild('recipeType').equalTo(recipeType);
-  }
 
   @override
   void initState() {
@@ -49,49 +46,67 @@ class _RecipeListPageState extends State<RecipeListPage> {
               accountName: null,
             ),
             ListTile(
-                title: const Text("Sniadania"),
-                trailing: const Icon(Icons.bakery_dining_outlined),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => const Sniadania()));
-                }),
+              title: const Text("Sniadania"),
+              trailing: const Icon(Icons.bakery_dining_outlined),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const Sniadania(),
+                  ),
+                );
+              },
+            ),
             ListTile(
-                title: const Text("Obiad"),
-                trailing: const Icon(Icons.lunch_dining_outlined),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => const Obiad("Obiad")));
-                }),
+              title: const Text("Obiad"),
+              trailing: const Icon(Icons.lunch_dining_outlined),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const Obiad(),
+                  ),
+                );
+              },
+            ),
             ListTile(
-                title: const Text("Kolacja"),
-                trailing: const Icon(Icons.dinner_dining),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const Kolacja("Kolacja")));
-                }),
+              title: const Text("Kolacja"),
+              trailing: const Icon(Icons.dinner_dining),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const Kolacja(),
+                  ),
+                );
+              },
+            ),
             ListTile(
-                title: const Text("Desert"),
-                trailing: const Icon(Icons.cake),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const Desert("Desert")));
-                }),
+              title: const Text("Desert"),
+              trailing: const Icon(Icons.cake),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const Desert(),
+                  ),
+                );
+              },
+            ),
             const Divider(),
             ListTile(
-                title: const Text("Settings"),
-                trailing: const Icon(Icons.settings),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const Settings("Settings")));
-                }),
+              title: const Text("Settings"),
+              trailing: const Icon(Icons.settings),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        const Settings("Settings"),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -127,10 +142,8 @@ class _RecipeListPageState extends State<RecipeListPage> {
               query: recipeRef,
               itemBuilder: (BuildContext context, DataSnapshot snapshot,
                   Animation<double> animation, int index) {
-                // Отримати дані рецепту зі снапшота
                 final recipeData = snapshot.value as Map<dynamic, dynamic>?;
                 if (recipeData != null) {
-                  // Створити віджет для відображення рецепту
                   return ListTile(
                     title: Text(recipeData['title'] ?? ''),
                     leading: Image.network(recipeData['photoUrl'] ?? ''),
@@ -142,7 +155,7 @@ class _RecipeListPageState extends State<RecipeListPage> {
                     ),
                   );
                 }
-                return const SizedBox(); // Повернути пустий віджет як заглушку, якщо дані недоступні
+                return const SizedBox();
               },
             ),
           ),
