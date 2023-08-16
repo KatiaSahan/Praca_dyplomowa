@@ -52,8 +52,16 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  Future addUserDetails(
+  Future<void> addUserDetails(
       String firstName, String lastName, String email, int age) async {
+    // Об'єднайте ім'я та прізвище в один рядок
+    String displayName = '$firstName $lastName';
+
+    // Оновіть displayName користувача
+    User user = FirebaseAuth.instance.currentUser!;
+    await user.updateDisplayName(displayName);
+
+    // Збережіть додаткові дані користувача у Firestore
     await FirebaseFirestore.instance.collection('users').add({
       'first name': firstName,
       'last name': lastName,

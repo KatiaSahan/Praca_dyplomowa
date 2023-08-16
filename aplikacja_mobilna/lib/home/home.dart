@@ -1,4 +1,6 @@
 import 'package:aplikacja_mobilna/home/add_recipe_page.dart';
+import 'package:aplikacja_mobilna/home/recipe_page.dart';
+import 'package:aplikacja_mobilna/home/user/user_page.dart';
 import 'package:aplikacja_mobilna/menu/desert.dart';
 import 'package:aplikacja_mobilna/menu/kolacja.dart';
 import 'package:aplikacja_mobilna/menu/obiad.dart';
@@ -10,17 +12,21 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class RecipeListPage extends StatefulWidget {
-  const RecipeListPage({Key? key}) : super(key: key);
+class HomeRecipePage extends StatefulWidget {
+  const HomeRecipePage({Key? key}) : super(key: key);
 
   @override
-  State<RecipeListPage> createState() => _RecipeListPageState();
+  State<HomeRecipePage> createState() => _HomeRecipePageState();
 }
 
-class _RecipeListPageState extends State<RecipeListPage> {
+class _HomeRecipePageState extends State<HomeRecipePage> {
   final user = FirebaseAuth.instance.currentUser!;
   final DatabaseReference recipeRef =
       FirebaseDatabase.instance.ref().child('recipes');
+
+  List<Map<dynamic, dynamic>> allRecipes = []; // Список усіх рецептів
+  List<Map<dynamic, dynamic>> filteredRecipes =
+      []; // Список відфільтрованих рецептів
 
   @override
   void initState() {
@@ -39,9 +45,25 @@ class _RecipeListPageState extends State<RecipeListPage> {
             UserAccountsDrawerHeader(
               //accountName: const Text("Marina Clark"),
               accountEmail: Text(user.email!),
-              currentAccountPicture: const CircleAvatar(
-                backgroundColor: Color.fromARGB(255, 10, 0, 116),
-                child: Text("C"),
+              currentAccountPicture: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => UserPage(
+                        user: user,
+                        age: null,
+                        email: '',
+                        firstName: '',
+                        lastName: '',
+                      ),
+                    ),
+                  );
+                },
+                child: const CircleAvatar(
+                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                  child: Text("C"),
+                ),
               ),
               accountName: null,
             ),
@@ -134,7 +156,17 @@ class _RecipeListPageState extends State<RecipeListPage> {
                 border: OutlineInputBorder(),
                 suffixIcon: Icon(Icons.search),
               ),
-              onChanged: (value) {},
+              onChanged: (value) {
+                // Фільтруємо рецепти на основі введеного значення value
+                setState(() {
+                  filteredRecipes = allRecipes
+                      .where((recipe) => recipe['title']
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))
+                      .toList();
+                });
+              },
             ),
           ),
           Expanded(
@@ -145,11 +177,35 @@ class _RecipeListPageState extends State<RecipeListPage> {
                 final recipeData = snapshot.value as Map<dynamic, dynamic>?;
                 if (recipeData != null) {
                   return ListTile(
-                    title: Text(recipeData['title'] ?? ''),
-                    leading: Image.network(recipeData['photoUrl'] ?? ''),
+                    title: Text(
+                      recipeData['title'] ?? '',
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Image.network(
+                          recipeData['photoUrl'] ?? '',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                     trailing: ElevatedButton(
                       onPressed: () {
-                        // Додайте код для переходу до сторінки з деталями рецепту
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecipePage(
+                              title: recipeData['title'],
+                              imageUrl: recipeData['photoUrl'],
+                              ingredients: List.from(recipeData['ingredients']),
+                              instructions: recipeData['instructions'],
+                              recipeType: recipeData['recipeType'],
+                            ),
+                          ),
+                        );
                       },
                       child: const Text('View'),
                     ),

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_import
 
 import 'package:flutter/material.dart';
 import '../models/recipe_model.dart';
@@ -102,7 +102,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const RecipeListPage()),
+      MaterialPageRoute(builder: (context) => const HomeRecipePage()),
     );
   }
 
