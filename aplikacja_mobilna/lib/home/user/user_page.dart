@@ -1,69 +1,147 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class UserPage extends StatelessWidget {
-  final String firstName;
-  final String lastName;
-  final String email;
-  final int? age;
+import '../recipe/recipe_page.dart';
+
+class UserPage extends StatefulWidget {
+  final List<Map<String, dynamic>> savedRecipes;
+  final List<Map<String, dynamic>> addedRecipes;
 
   const UserPage({
-    super.key,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.age,
-    required User user,
-  });
+    Key? key,
+    required this.savedRecipes,
+    required this.addedRecipes,
+  }) : super(key: key);
 
   @override
+  UserPageState createState() => UserPageState();
+}
+
+class UserPageState extends State<UserPage> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Profile'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('User Profile'),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Account'),
+              Tab(text: 'Saved Recipe'),
+              Tab(text: 'Added Recipe'),
+            ],
+          ),
+        ),
+        body: TabBarView(
           children: [
-            CircleAvatar(
-              // Змініть колір фону кругового аватара тут
-              radius: 50,
-              child: Text(
-                firstName.isNotEmpty ? firstName[0] : 'U',
-                style: const TextStyle(
-                  fontSize: 36,
-                  color: Colors.white,
-                ),
-              ),
+            const Center(
+              child: Text('Account Tab Content'),
             ),
-            const SizedBox(height: 20),
-            Text(
-              '$firstName $lastName',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Age: $age',
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Email: $email',
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            // Додайте інші поля тут, якщо є додаткові дані про користувача
+            SavedRecipesTab(savedRecipes: widget.savedRecipes),
+            AddedRecipesTab(addedRecipes: widget.addedRecipes),
           ],
         ),
       ),
+    );
+  }
+}
+
+class SavedRecipesTab extends StatelessWidget {
+  final List<Map<String, dynamic>> savedRecipes;
+
+  const SavedRecipesTab({
+    Key? key,
+    required this.savedRecipes,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (kDebugMode) {
+      print(savedRecipes);
+    }
+    return ListView.builder(
+      itemCount: savedRecipes.length,
+      itemBuilder: (context, index) {
+        final recipe = savedRecipes[index];
+        ListTile(
+          title: Row(
+            children: [
+              Text(recipe['title']),
+              const SizedBox(width: 10),
+              Image.network(
+                recipe['photoUrl'] ?? '',
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+              ),
+            ],
+          ),
+          onTap: () {
+            // Викликаємо сторінку з деталями рецепту та передаємо йому дані
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RecipePage(
+                  title: recipe['title'],
+                  ingredients: recipe['ingredients'],
+                  instructions: recipe['instructions'],
+                  imageUrl: recipe['imageUrl'],
+                  recipeType: recipe['recipeType'],
+                ),
+              ),
+            );
+          },
+        );
+        return null;
+      },
+    );
+  }
+}
+
+class AddedRecipesTab extends StatelessWidget {
+  final List<Map<String, dynamic>> addedRecipes;
+
+  const AddedRecipesTab({
+    Key? key,
+    required this.addedRecipes,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: addedRecipes.length,
+      itemBuilder: (context, index) {
+        final recipe = addedRecipes[index];
+        return ListTile(
+          title: Row(
+            children: [
+              Text(recipe['title']),
+              const SizedBox(width: 10),
+              Image.network(
+                recipe['photoUrl'] ?? '',
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+              ),
+            ],
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RecipePage(
+                  title: recipe['title'],
+                  ingredients: recipe['ingredients'],
+                  instructions: recipe['instructions'],
+                  imageUrl: recipe['imageUrl'],
+                  recipeType: recipe['recipeType'],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

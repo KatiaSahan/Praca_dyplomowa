@@ -4,6 +4,8 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../home/recipe/recipe_page.dart';
+
 class Obiad extends StatelessWidget {
   const Obiad({Key? key}) : super(key: key);
 
@@ -42,7 +44,18 @@ class Obiad extends StatelessWidget {
                     leading: Image.network(recipePhotoUrl),
                     trailing: ElevatedButton(
                       onPressed: () {
-                        // Додайте код для переходу до сторінки з деталями рецепту
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecipePage(
+                              title: recipeData['title'],
+                              imageUrl: recipeData['photoUrl'],
+                              ingredients: List.from(recipeData['ingredients']),
+                              instructions: recipeData['instructions'],
+                              recipeType: recipeData['recipeType'],
+                            ),
+                          ),
+                        );
                       },
                       child: const Text('View'),
                     ),

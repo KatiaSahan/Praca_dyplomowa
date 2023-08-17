@@ -1,13 +1,13 @@
 // ignore_for_file: use_build_context_synchronously, unused_import
 
 import 'package:flutter/material.dart';
-import '../models/recipe_model.dart';
+import '../../models/recipe_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-import 'home.dart';
+import '../home.dart';
 
 class AddRecipePage extends StatefulWidget {
   const AddRecipePage({Key? key}) : super(key: key);
@@ -96,7 +96,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
       ingredients: ingredients,
       instructions: instructionsController.text,
       photoUrl: uploadedImageUrl ?? '',
-      recipeType: '',
+      recipeType: selectedRecipeType ?? '',
     );
     addRecipe(newRecipe);
 

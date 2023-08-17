@@ -1,5 +1,5 @@
-import 'package:aplikacja_mobilna/home/add_recipe_page.dart';
-import 'package:aplikacja_mobilna/home/recipe_page.dart';
+import 'package:aplikacja_mobilna/home/recipe/add_recipe_page.dart';
+import 'package:aplikacja_mobilna/home/recipe/recipe_page.dart';
 import 'package:aplikacja_mobilna/home/user/user_page.dart';
 import 'package:aplikacja_mobilna/menu/desert.dart';
 import 'package:aplikacja_mobilna/menu/kolacja.dart';
@@ -50,12 +50,9 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
                   Navigator.of(context).pop();
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (BuildContext context) => UserPage(
-                        user: user,
-                        age: null,
-                        email: '',
-                        firstName: '',
-                        lastName: '',
+                      builder: (BuildContext context) => const UserPage(
+                        savedRecipes: [],
+                        addedRecipes: [],
                       ),
                     ),
                   );
