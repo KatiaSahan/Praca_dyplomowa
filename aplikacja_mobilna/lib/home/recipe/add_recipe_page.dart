@@ -61,7 +61,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
   }
 
   void addRecipe(Recipe recipe) {
-    recipe.photoUrl =
+    recipe.imageUrl =
         uploadedImageUrl ?? ''; // Встановлюємо URL завантаженої фотографії
 
     // Збереження рецепту в базу даних Firebase
@@ -95,7 +95,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
       title: titleController.text,
       ingredients: ingredients,
       instructions: instructionsController.text,
-      photoUrl: uploadedImageUrl ?? '',
+      imageUrl: uploadedImageUrl ?? '',
       recipeType: selectedRecipeType ?? '',
     );
     addRecipe(newRecipe);

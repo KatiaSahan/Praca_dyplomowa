@@ -14,6 +14,7 @@ class RecipePage extends StatefulWidget {
     required this.ingredients,
     required this.instructions,
     required this.recipeType,
+    required List<Map<String, dynamic>> comments,
   }) : super(key: key);
 
   @override
@@ -154,7 +155,7 @@ class RecipePageState extends State<RecipePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Adding the recipe to the list of saved recipes
+// Додавання рецепту до списку збережених рецептів
           final savedRecipe = {
             'title': widget.title,
             'imageUrl': widget.imageUrl,
@@ -162,11 +163,17 @@ class RecipePageState extends State<RecipePage> {
             'instructions': widget.instructions,
             'recipeType': widget.recipeType,
             'rating': rating,
-            // Add comments to the saved recipe here
+            'comments': comments
+                .map((commentData) => {
+                      'name': commentData.name,
+                      'comment': commentData.comment,
+                      'rating': commentData.rating,
+                    })
+                .toList(),
           };
           savedRecipes.add(savedRecipe);
 
-          // Show a notification about saving the recipe
+          // Показ повідомлення про збереження рецепту
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Recipe saved')),
           );

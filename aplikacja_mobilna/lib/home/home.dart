@@ -50,10 +50,7 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
                   Navigator.of(context).pop();
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (BuildContext context) => const UserPage(
-                        savedRecipes: [],
-                        addedRecipes: [],
-                      ),
+                      builder: (BuildContext context) => const UserPage(),
                     ),
                   );
                 },
@@ -200,6 +197,7 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
                               ingredients: List.from(recipeData['ingredients']),
                               instructions: recipeData['instructions'],
                               recipeType: recipeData['recipeType'],
+                              comments: const [],
                             ),
                           ),
                         );

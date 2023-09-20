@@ -2,14 +2,14 @@ class Recipe {
   String title;
   List<String> ingredients;
   String instructions;
-  String photoUrl;
+  String imageUrl;
   String recipeType;
 
   Recipe({
     required this.title,
     required this.ingredients,
     required this.instructions,
-    required this.photoUrl,
+    required this.imageUrl,
     required this.recipeType,
   });
 
@@ -18,7 +18,7 @@ class Recipe {
       title: json['title'],
       ingredients: List<String>.from(json['ingredients']),
       instructions: json['instructions'],
-      photoUrl: json['photoUrl'],
+      imageUrl: json['imageUrl'],
       recipeType: json['recipeType'],
     );
   }
@@ -28,7 +28,7 @@ class Recipe {
       'title': title,
       'ingredients': ingredients,
       'instructions': instructions,
-      'photoUrl': photoUrl,
+      'imageUrl': imageUrl,
       'recipeType': recipeType,
     };
   }

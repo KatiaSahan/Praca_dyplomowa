@@ -53,6 +53,7 @@ class Kolacja extends StatelessWidget {
                               ingredients: List.from(recipeData['ingredients']),
                               instructions: recipeData['instructions'],
                               recipeType: recipeData['recipeType'],
+                              comments: const [],
                             ),
                           ),
                         );
