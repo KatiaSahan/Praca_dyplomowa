@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../menu/additional_page/saved_recipe_page.dart';
+
 class RecipePage extends StatefulWidget {
   final String title;
   final String imageUrl;
@@ -22,6 +24,8 @@ class RecipePage extends StatefulWidget {
 }
 
 class RecipePageState extends State<RecipePage> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   static List<Map<String, dynamic>> savedRecipes = [];
   double rating = 0;
   TextEditingController commentController = TextEditingController();
@@ -176,6 +180,15 @@ class RecipePageState extends State<RecipePage> {
           // Показ повідомлення про збереження рецепту
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Recipe saved')),
+          );
+          // Перехід до сторінки "SavedRecipesPage"
+
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const SavedRecipesPage(
+                savedRecipes: [],
+              ),
+            ),
           );
         },
         child: const Icon(Icons.save),
