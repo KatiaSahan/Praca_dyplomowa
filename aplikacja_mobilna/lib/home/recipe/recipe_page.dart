@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../menu/additional_page/saved_recipe_page.dart';
+import 'dart:convert';
 
 class RecipePage extends StatefulWidget {
   final String title;
@@ -27,10 +28,50 @@ class RecipePageState extends State<RecipePage> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   static List<Map<String, dynamic>> savedRecipes = [];
+  SharedPreferences? preferences;
   double rating = 0;
   TextEditingController commentController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   List<CommentData> comments = [];
+  bool isRecipeSaved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedRecipes();
+  }
+
+  _loadSavedRecipes() async {
+    preferences = await SharedPreferences.getInstance();
+    final savedRecipesJson = preferences?.getStringList('savedRecipes');
+    if (savedRecipesJson != null) {
+      setState(() {
+        savedRecipes = savedRecipesJson
+            .map((recipeJson) => Map<String, dynamic>.from(
+                json.decode(recipeJson) as Map<String, dynamic>))
+            .toList();
+      });
+    }
+  }
+
+  // Зберегти збережені рецепти при закритті додатку
+  @override
+  void dispose() {
+    super.dispose();
+    _saveRecipes();
+  }
+
+  bool isRecipeAlreadySaved() {
+    return savedRecipes.any((recipe) {
+      return recipe['title'] == widget.title;
+    });
+  }
+
+  _saveRecipes() {
+    final savedRecipesJson =
+        savedRecipes.map((recipe) => json.encode(recipe)).toList();
+    preferences?.setStringList('savedRecipes', savedRecipesJson);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,39 +201,53 @@ class RecipePageState extends State<RecipePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
 // Додавання рецепту до списку збережених рецептів
-          final savedRecipe = {
-            'title': widget.title,
-            'imageUrl': widget.imageUrl,
-            'ingredients': widget.ingredients,
-            'instructions': widget.instructions,
-            'recipeType': widget.recipeType,
-            'rating': rating,
-            'comments': comments
-                .map((commentData) => {
-                      'name': commentData.name,
-                      'comment': commentData.comment,
-                      'rating': commentData.rating,
-                    })
-                .toList(),
-          };
-          savedRecipes.add(savedRecipe);
-
-          // Показ повідомлення про збереження рецепту
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Recipe saved')),
-          );
-          // Перехід до сторінки "SavedRecipesPage"
-
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SavedRecipesPage(
-                savedRecipes: [],
+          if (isRecipeAlreadySaved()) {
+            // Рецепт вже збережено, тому перейдемо до сторінки збережених рецептів
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => SavedRecipesListPage(
+                  savedRecipes: savedRecipes,
+                ),
               ),
-            ),
-          );
-        },
-        child: const Icon(Icons.save),
+            );
+          } else {
+            // Додавання рецепту до списку збережених рецептів
+            final savedRecipe = {
+              'title': widget.title,
+              'imageUrl': widget.imageUrl,
+              'ingredients': widget.ingredients,
+              'instructions': widget.instructions,
+              'recipeType': widget.recipeType,
+              'rating': rating,
+              'comments': comments
+                  .map((commentData) => {
+                        'name': commentData.name,
+                        'comment': commentData.comment,
+                        'rating': commentData.rating,
+                      })
+                  .toList(),
+            };
+            savedRecipes.add(savedRecipe);
+
+            // Показ повідомлення про збереження рецепту
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Recipe saved')),
+            );
+
+            // Зберегти зміни до списку збережених рецептів
+            _saveRecipes();
+           // Перейти до сторінки збережених рецептів
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SavedRecipesListPage(
+          savedRecipes: savedRecipes,
+        ),
       ),
+    );
+  }
+        };
+  child: const Icon(Icons.save);
+)
     );
   }
 
