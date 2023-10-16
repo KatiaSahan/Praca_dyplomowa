@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../menu/additional_page/saved_recipe_page.dart';
 import 'dart:convert';
 
 class RecipePage extends StatefulWidget {
@@ -9,6 +8,7 @@ class RecipePage extends StatefulWidget {
   final List<String> ingredients;
   final String instructions;
   final String recipeType;
+  final List<Map<String, dynamic>> comments;
 
   const RecipePage({
     Key? key,
@@ -17,7 +17,7 @@ class RecipePage extends StatefulWidget {
     required this.ingredients,
     required this.instructions,
     required this.recipeType,
-    required List<Map<String, dynamic>> comments,
+    required this.comments,
   }) : super(key: key);
 
   @override
@@ -25,15 +25,12 @@ class RecipePage extends StatefulWidget {
 }
 
 class RecipePageState extends State<RecipePage> {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-  static List<Map<String, dynamic>> savedRecipes = [];
-  SharedPreferences? preferences;
   double rating = 0;
   TextEditingController commentController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   List<CommentData> comments = [];
   bool isRecipeSaved = false;
+  List<Map<String, dynamic>> savedRecipes = [];
 
   @override
   void initState() {
@@ -42,14 +39,15 @@ class RecipePageState extends State<RecipePage> {
   }
 
   _loadSavedRecipes() async {
-    preferences = await SharedPreferences.getInstance();
-    final savedRecipesJson = preferences?.getStringList('savedRecipes');
+    final preferences = await SharedPreferences.getInstance();
+    final savedRecipesJson = preferences.getStringList('savedRecipes');
     if (savedRecipesJson != null) {
+      final loadedRecipes = savedRecipesJson
+          .map((recipeJson) => Map<String, dynamic>.from(
+              json.decode(recipeJson) as Map<String, dynamic>))
+          .toList();
       setState(() {
-        savedRecipes = savedRecipesJson
-            .map((recipeJson) => Map<String, dynamic>.from(
-                json.decode(recipeJson) as Map<String, dynamic>))
-            .toList();
+        savedRecipes.addAll(loadedRecipes);
       });
     }
   }
@@ -57,8 +55,8 @@ class RecipePageState extends State<RecipePage> {
   // Зберегти збережені рецепти при закритті додатку
   @override
   void dispose() {
-    super.dispose();
     _saveRecipes();
+    super.dispose();
   }
 
   bool isRecipeAlreadySaved() {
@@ -67,10 +65,11 @@ class RecipePageState extends State<RecipePage> {
     });
   }
 
-  _saveRecipes() {
+  _saveRecipes() async {
+    final preferences = await SharedPreferences.getInstance();
     final savedRecipesJson =
         savedRecipes.map((recipe) => json.encode(recipe)).toList();
-    preferences?.setStringList('savedRecipes', savedRecipesJson);
+    preferences.setStringList('savedRecipes', savedRecipesJson);
   }
 
   @override
@@ -200,7 +199,7 @@ class RecipePageState extends State<RecipePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-// Додавання рецепту до списку збережених рецептів
+          // Додавання рецепту до списку збережених рецептів
           if (isRecipeAlreadySaved()) {
             // Рецепт вже збережено, тому перейдемо до сторінки збережених рецептів
             Navigator.of(context).push(
@@ -236,18 +235,18 @@ class RecipePageState extends State<RecipePage> {
 
             // Зберегти зміни до списку збережених рецептів
             _saveRecipes();
-           // Перейти до сторінки збережених рецептів
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => SavedRecipesListPage(
-          savedRecipes: savedRecipes,
-        ),
+            // Перейти до сторінки збережених рецептів
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => SavedRecipesListPage(
+                  savedRecipes: savedRecipes,
+                ),
+              ),
+            );
+          }
+        },
+        child: const Icon(Icons.save),
       ),
-    );
-  }
-        };
-  child: const Icon(Icons.save);
-)
     );
   }
 
@@ -296,4 +295,46 @@ class CommentData {
   final double rating;
 
   CommentData(this.name, this.comment, this.rating);
+}
+
+class SavedRecipesListPage extends StatelessWidget {
+  final List<Map<String, dynamic>> savedRecipes;
+
+  const SavedRecipesListPage({super.key, required this.savedRecipes});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Saved Recipes'),
+      ),
+      body: ListView.builder(
+        itemCount: savedRecipes.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: Image.network(savedRecipes[index]['imageUrl'],
+                width: 40, height: 40),
+            title: Text(savedRecipes[index]['title']),
+            onTap: () {
+              // Navigate to the recipe page when an item is tapped
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => RecipePage(
+                    title: savedRecipes[index]['title'],
+                    imageUrl: savedRecipes[index]['imageUrl'],
+                    ingredients:
+                        List<String>.from(savedRecipes[index]['ingredients']),
+                    instructions: savedRecipes[index]['instructions'],
+                    recipeType: savedRecipes[index]['recipeType'],
+                    comments: List<Map<String, dynamic>>.from(
+                        savedRecipes[index]['comments']),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 }

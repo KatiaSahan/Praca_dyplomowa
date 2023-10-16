@@ -102,7 +102,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const HomeRecipePage()),
+      MaterialPageRoute(builder: (context) => HomeRecipePage()),
     );
   }
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../menu/additional_page/saved_recipe_page.dart';
 
 class UserPage extends StatelessWidget {
-  const UserPage({Key? key}) : super(key: key);
+  const UserPage({Key? key, required List savedRecipes}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
