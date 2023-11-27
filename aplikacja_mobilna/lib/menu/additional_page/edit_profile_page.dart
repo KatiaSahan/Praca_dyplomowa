@@ -11,12 +11,12 @@ class EditProfilePage extends StatefulWidget {
   final String age;
 
   const EditProfilePage({
-    Key? key,
+    super.key,
     required this.email,
     required this.firstName,
     required this.lastName,
     required this.age,
-  }) : super(key: key);
+  });
 
   @override
   EditProfilePageState createState() => EditProfilePageState();

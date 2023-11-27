@@ -4,10 +4,11 @@ import '../../home/recipe/recipe_page.dart';
 class SavedRecipesPage extends StatelessWidget {
   final List<Map<String, dynamic>> savedRecipes;
 
-  const SavedRecipesPage({
-    Key? key,
+  const SavedRecipesPage(
+    String s, {
+    super.key,
     required this.savedRecipes,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

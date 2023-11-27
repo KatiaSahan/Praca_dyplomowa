@@ -1,6 +1,5 @@
 import 'package:aplikacja_mobilna/home/recipe/add_recipe_page.dart';
 import 'package:aplikacja_mobilna/home/recipe/recipe_page.dart';
-import 'package:aplikacja_mobilna/home/user/user_page.dart';
 import 'package:aplikacja_mobilna/menu/desert.dart';
 import 'package:aplikacja_mobilna/menu/kolacja.dart';
 import 'package:aplikacja_mobilna/menu/obiad.dart';
@@ -11,10 +10,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../menu/shoppinglistpage.dart';
+
 class HomeRecipePage extends StatefulWidget {
   final List<Map<String, dynamic>> savedRecipes = [];
 
-  HomeRecipePage({Key? key}) : super(key: key);
+  HomeRecipePage({super.key});
 
   @override
   State<HomeRecipePage> createState() => _HomeRecipePageState();
@@ -68,16 +69,6 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
             UserAccountsDrawerHeader(
               accountEmail: Text(user.email!),
               currentAccountPicture: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const UserPage(
-                        savedRecipes: [],
-                      ),
-                    ),
-                  );
-                },
                 child: const CircleAvatar(
                   backgroundColor: Color.fromARGB(255, 255, 255, 255),
                   child: Text("C"),
@@ -134,6 +125,18 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
               },
             ),
             const Divider(),
+            ListTile(
+              title: const Text("Lista zakupów"),
+              trailing: const Icon(Icons.shopping_cart),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const ShoppingListPage(),
+                  ),
+                );
+              },
+            ),
             ListTile(
               title: const Text("Settings"),
               trailing: const Icon(Icons.settings),

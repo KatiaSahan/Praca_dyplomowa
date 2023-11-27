@@ -1,6 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:aplikacja_mobilna/menu/additional_page/edit_recipe_page.dart';
+import 'package:aplikacja_mobilna/models/recipe_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:share/share.dart';
 
 class RecipePage extends StatefulWidget {
   final String title;
@@ -11,14 +16,14 @@ class RecipePage extends StatefulWidget {
   final List<Map<String, dynamic>> comments;
 
   const RecipePage({
-    Key? key,
+    super.key,
     required this.title,
     required this.imageUrl,
     required this.ingredients,
     required this.instructions,
     required this.recipeType,
     required this.comments,
-  }) : super(key: key);
+  });
 
   @override
   RecipePageState createState() => RecipePageState();
@@ -52,7 +57,7 @@ class RecipePageState extends State<RecipePage> {
     }
   }
 
-  // Зберегти збережені рецепти при закритті додатку
+  // Save saved recipes when the app is closed
   @override
   void dispose() {
     _saveRecipes();
@@ -77,6 +82,32 @@ class RecipePageState extends State<RecipePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit), // Іконка для редагування
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => EditRecipePage(
+                    recipe: Recipe(
+                      title: widget.title,
+                      imageUrl: widget.imageUrl,
+                      ingredients: widget.ingredients,
+                      instructions: widget.instructions,
+                      recipeType: widget.recipeType,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {
+              shareRecipe();
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -199,9 +230,8 @@ class RecipePageState extends State<RecipePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Додавання рецепту до списку збережених рецептів
           if (isRecipeAlreadySaved()) {
-            // Рецепт вже збережено, тому перейдемо до сторінки збережених рецептів
+            // If the recipe is already saved, navigate to the saved recipes page
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => SavedRecipesListPage(
@@ -210,7 +240,7 @@ class RecipePageState extends State<RecipePage> {
               ),
             );
           } else {
-            // Додавання рецепту до списку збережених рецептів
+            // Add the recipe to the list of saved recipes
             final savedRecipe = {
               'title': widget.title,
               'imageUrl': widget.imageUrl,
@@ -228,14 +258,11 @@ class RecipePageState extends State<RecipePage> {
             };
             savedRecipes.add(savedRecipe);
 
-            // Показ повідомлення про збереження рецепту
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Recipe saved')),
             );
 
-            // Зберегти зміни до списку збережених рецептів
             _saveRecipes();
-            // Перейти до сторінки збережених рецептів
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => SavedRecipesListPage(
@@ -287,6 +314,17 @@ class RecipePageState extends State<RecipePage> {
       ),
     );
   }
+
+  void shareRecipe() {
+    final recipeTitle = widget.title;
+    final recipeInstructions = widget.instructions;
+    final recipeingredients = widget.ingredients;
+
+    final shareText =
+        'Recipe: $recipeTitle\n\n$recipeingredients\n\n$recipeInstructions';
+
+    Share.share(shareText, subject: recipeTitle);
+  }
 }
 
 class CommentData {
@@ -316,7 +354,6 @@ class SavedRecipesListPage extends StatelessWidget {
                 width: 40, height: 40),
             title: Text(savedRecipes[index]['title']),
             onTap: () {
-              // Navigate to the recipe page when an item is tapped
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => RecipePage(

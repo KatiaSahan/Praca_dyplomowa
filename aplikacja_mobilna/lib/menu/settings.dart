@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'additional_page/edit_profile_page.dart';
 
 class Settings extends StatefulWidget {
-  const Settings(String s, {Key? key}) : super(key: key);
+  const Settings(String s, {super.key});
 
   @override
   State<Settings> createState() => _SettingsState();

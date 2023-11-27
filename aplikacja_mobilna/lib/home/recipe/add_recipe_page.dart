@@ -10,7 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../home.dart';
 
 class AddRecipePage extends StatefulWidget {
-  const AddRecipePage({Key? key}) : super(key: key);
+  const AddRecipePage({super.key});
 
   @override
   State<AddRecipePage> createState() => _AddRecipePageState();
@@ -115,7 +115,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
           builder: (context) {
             return Scaffold(
               appBar: AppBar(
-                title: const Text('Додати рецепт'),
+                title: const Text('Dodaj przepis'),
               ),
               body: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
@@ -124,7 +124,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                     TextField(
                       controller: titleController,
                       decoration: const InputDecoration(
-                        labelText: 'Назва рецепту',
+                        labelText: 'Nazwa przepisu',
                       ),
                     ),
                     Column(
@@ -133,7 +133,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                         TextField(
                           controller: ingredientsController,
                           decoration: const InputDecoration(
-                            hintText: 'Введіть інгредієнти через кому',
+                            hintText: 'Wprowadź składniki przecinkami',
                           ),
                         ),
                       ],
@@ -141,7 +141,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                     TextField(
                       controller: instructionsController,
                       decoration: const InputDecoration(
-                        labelText: 'Інструкції',
+                        labelText: 'Instrukcje',
                       ),
                     ),
                     DropdownButtonFormField<String>(
@@ -158,7 +158,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                         );
                       }).toList(),
                       decoration: const InputDecoration(
-                        labelText: 'Тип рецепту',
+                        labelText: 'Rodzaj przepisu',
                       ),
                     ),
                     if (_selectedImage != null)
@@ -168,11 +168,11 @@ class _AddRecipePageState extends State<AddRecipePage> {
                       ),
                     ElevatedButton(
                       onPressed: _selectImage,
-                      child: const Text('Вибрати фото'),
+                      child: const Text('Wybierz zdjęcie'),
                     ),
                     ElevatedButton(
                       onPressed: saveRecipe,
-                      child: const Text('Зберегти рецепт'),
+                      child: const Text('Zapisz przepis'),
                     ),
                   ],
                 ),

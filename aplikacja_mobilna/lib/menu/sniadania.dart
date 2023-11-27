@@ -7,7 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import '../home/recipe/recipe_page.dart';
 
 class Sniadania extends StatelessWidget {
-  const Sniadania({Key? key}) : super(key: key);
+  const Sniadania({super.key});
 
   @override
   Widget build(BuildContext context) {

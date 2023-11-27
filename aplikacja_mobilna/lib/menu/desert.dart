@@ -7,7 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import '../home/recipe/recipe_page.dart';
 
 class Desert extends StatelessWidget {
-  const Desert({Key? key}) : super(key: key);
+  const Desert({super.key});
 
   @override
   Widget build(BuildContext context) {

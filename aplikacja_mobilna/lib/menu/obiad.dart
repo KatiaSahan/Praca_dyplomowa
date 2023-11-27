@@ -7,7 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import '../home/recipe/recipe_page.dart';
 
 class Obiad extends StatelessWidget {
-  const Obiad({Key? key}) : super(key: key);
+  const Obiad({super.key});
 
   @override
   Widget build(BuildContext context) {
