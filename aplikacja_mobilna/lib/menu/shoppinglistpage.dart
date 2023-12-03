@@ -54,7 +54,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
                     child: TextField(
                       controller: itemController,
                       decoration: const InputDecoration(
-                        hintText: 'Add item',
+                        hintText: 'Add items',
                       ),
                     ),
                   ),
