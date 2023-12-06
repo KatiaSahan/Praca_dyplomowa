@@ -40,10 +40,10 @@ class _AddRecipePageState extends State<AddRecipePage> {
     }
   }
 
-  Future<void> uploadImage() async {
-    if (_selectedImage == null) return;
+  Future<String> uploadImage(String recipeKey) async {
+    if (_selectedImage == null) return '';
 
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    String fileName = '${recipeKey}_photo';
 
     firebase_storage.Reference storageRef = firebase_storage
         .FirebaseStorage.instance
@@ -53,14 +53,10 @@ class _AddRecipePageState extends State<AddRecipePage> {
 
     await storageRef.putFile(_selectedImage!);
 
-    String downloadURL = await storageRef.getDownloadURL();
-
-    setState(() {
-      uploadedImageUrl = downloadURL;
-    });
+    return await storageRef.getDownloadURL();
   }
 
-  void addRecipe(Recipe recipe) {
+  void addRecipe(Recipe recipe, String recipeKey) async {
     recipe.imageUrl =
         uploadedImageUrl ?? ''; // Встановлюємо URL завантаженої фотографії
 
@@ -69,18 +65,9 @@ class _AddRecipePageState extends State<AddRecipePage> {
     newRecipeRef.set(recipe.toJson());
     // Отримуємо ключ рецепту, щоб встановити фотографію відповідного об'єкту
     String recipeKey = newRecipeRef.key ?? '';
-
+    String photoUrl = await uploadImage(recipeKey);
     // Оновлюємо об'єкт рецепту з фотографією
-    newRecipeRef.update({'photoUrl': uploadedImageUrl});
-
-    // Завантаження фотографії до Firebase Storage з використанням ключа рецепту
-    String fileName = '${recipeKey}_photo';
-    firebase_storage.Reference storageRef = firebase_storage
-        .FirebaseStorage.instance
-        .ref()
-        .child('recipe_images')
-        .child(fileName);
-    storageRef.putFile(_selectedImage!);
+    newRecipeRef.update({'photoUrl': photoUrl});
   }
 
   void saveRecipe() async {
@@ -88,8 +75,9 @@ class _AddRecipePageState extends State<AddRecipePage> {
         .split(',')
         .map((ingredient) => ingredient.trim())
         .toList();
-
-    await uploadImage();
+    String recipeKey =
+        FirebaseDatabase.instance.ref().child('recipes').push().key ?? '';
+    await uploadImage(recipeKey);
 
     Recipe newRecipe = Recipe(
       title: titleController.text,
@@ -98,7 +86,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
       imageUrl: uploadedImageUrl ?? '',
       recipeType: selectedRecipeType ?? '',
     );
-    addRecipe(newRecipe);
+    addRecipe(newRecipe, recipeKey);
 
     Navigator.pushReplacement(
       context,
@@ -115,7 +103,9 @@ class _AddRecipePageState extends State<AddRecipePage> {
           builder: (context) {
             return Scaffold(
               appBar: AppBar(
-                title: const Text('Dodaj przepis'),
+                title: const Text('Dodaj przepis',
+                    style: TextStyle(color: Colors.white)),
+                backgroundColor: const Color.fromARGB(248, 103, 16, 216),
               ),
               body: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),

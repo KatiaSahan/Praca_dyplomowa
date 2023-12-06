@@ -24,7 +24,8 @@ class Kolacja extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Kolacja"),
+        title: const Text("Kolacja", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(248, 103, 16, 216),
       ),
       body: Column(
         children: [

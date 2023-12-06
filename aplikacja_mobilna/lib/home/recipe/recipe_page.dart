@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:aplikacja_mobilna/menu/additional_page/edit_recipe_page.dart';
-import 'package:aplikacja_mobilna/models/recipe_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -81,28 +79,14 @@ class RecipePageState extends State<RecipePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(248, 103, 16, 216),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit), // Іконка для редагування
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => EditRecipePage(
-                    recipe: Recipe(
-                      title: widget.title,
-                      imageUrl: widget.imageUrl,
-                      ingredients: widget.ingredients,
-                      instructions: widget.instructions,
-                      recipeType: widget.recipeType,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.share),
+            icon: const Icon(
+              Icons.share,
+              color: Colors.white,
+            ),
             onPressed: () {
               shareRecipe();
             },

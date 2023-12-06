@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aplikacja_mobilna/home/recipe/add_recipe_page.dart';
 import 'package:aplikacja_mobilna/home/recipe/recipe_page.dart';
 import 'package:aplikacja_mobilna/menu/desert.dart';
@@ -41,6 +43,7 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
           allRecipes = List<Map<dynamic, dynamic>>.from(
               (event.snapshot.value as Map).values);
           updateFilteredRecipes();
+          updateRandomRecipes();
         });
       }
     });
@@ -60,6 +63,18 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
     });
   }
 
+  void updateRandomRecipes() {
+    final random = Random();
+
+    allRecipes.shuffle(random);
+
+    final randomRecipesList = allRecipes.take(50).toList();
+
+    setState(() {
+      filteredRecipes = List<Map<dynamic, dynamic>>.from(randomRecipesList);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,14 +82,37 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountEmail: Text(user.email!),
-              currentAccountPicture: GestureDetector(
-                child: const CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                  child: Text("C"),
+              accountEmail: Transform.translate(
+                offset:
+                    const Offset(0, -10), // Зміщуємо текст вгору на 50 пікселів
+                child: Text(
+                  user.email!,
+                  style: const TextStyle(
+                    fontSize: 24,
+                  ),
                 ),
               ),
+              currentAccountPicture: GestureDetector(
+                child: Container(
+                    //  decoration: const BoxDecoration(
+                    //   color: Color.fromARGB(255, 255, 255, 255),
+                    ////   shape: BoxShape.circle,
+                    // ),
+                    // child: const Icon(
+                    //   Icons.account_circle,
+                    //   size: 64,
+                    //   color: Colors.grey,
+                    // ),
+                    ),
+              ),
               accountName: null,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                      'https://kor.ill.in.ua/m/610x385/2805833.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             ListTile(
               title: const Text("Sniadania"),
@@ -154,7 +192,8 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
         ),
       ),
       appBar: AppBar(
-        title: const Text('YummyYummy'),
+        title: const Text('YummyYummy', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(248, 103, 16, 216),
         actions: [
           ElevatedButton(
             onPressed: () {
@@ -167,74 +206,76 @@ class _HomeRecipePageState extends State<HomeRecipePage> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: TextField(
-              controller: searchController,
-              decoration: const InputDecoration(
-                hintText: 'Search for recipes',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.search),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextField(
+                controller: searchController,
+                decoration: const InputDecoration(
+                  hintText: 'Search for recipes',
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.search),
+                ),
+                onChanged: (value) {
+                  updateFilteredRecipes();
+                },
               ),
-              onChanged: (value) {
-                updateFilteredRecipes();
-              },
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredRecipes.length,
-              itemBuilder: (context, index) {
-                final recipeData = filteredRecipes[index];
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Text(
-                        recipeData['title'] ?? '',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Image.network(
-                            recipeData['photoUrl'] ?? '',
-                            fit: BoxFit.cover,
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredRecipes.length,
+                itemBuilder: (context, index) {
+                  final recipeData = filteredRecipes[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          recipeData['title'] ?? '',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                      trailing: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RecipePage(
-                                title: recipeData['title'],
-                                imageUrl: recipeData['photoUrl'],
-                                ingredients:
-                                    List.from(recipeData['ingredients']),
-                                instructions: recipeData['instructions'],
-                                recipeType: recipeData['recipeType'],
-                                comments: const [],
-                              ),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Image.network(
+                              recipeData['photoUrl'] ?? '',
+                              fit: BoxFit.cover,
                             ),
-                          );
-                        },
-                        child: const Text('View'),
+                          ),
+                        ),
+                        trailing: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RecipePage(
+                                  title: recipeData['title'],
+                                  imageUrl: recipeData['photoUrl'],
+                                  ingredients:
+                                      List.from(recipeData['ingredients']),
+                                  instructions: recipeData['instructions'],
+                                  recipeType: recipeData['recipeType'],
+                                  comments: const [],
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text('View'),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16.0),
-                  ],
-                );
-              },
+                      const SizedBox(height: 16.0),
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

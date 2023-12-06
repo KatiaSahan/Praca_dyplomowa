@@ -24,7 +24,8 @@ class Sniadania extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sniadania"),
+        title: const Text("Sniadania", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(248, 103, 16, 216),
       ),
       body: Column(
         children: [

@@ -2,6 +2,22 @@ import 'package:aplikacja_mobilna/home/Auth/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+MaterialColor myCustomColor = const MaterialColor(
+  0xFF800080,
+  <int, Color>{
+    50: Color(0xFFE0E0E0),
+    100: Color(0xFFB3B3B3),
+    200: Color(0xFF808080),
+    300: Color(0xFF4D4D4D),
+    400: Color(0xFF262626),
+    500: Color(0xFF000000),
+    600: Color(0xFF000000),
+    700: Color(0xFF000000),
+    800: Color(0xFF000000),
+    900: Color(0xFF000000),
+  },
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -16,21 +32,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: const MaterialColor(
-          0xFFFFA000,
-          <int, Color>{
-            50: Color(0xFFFFF3E0),
-            100: Color(0xFFFFE0B2),
-            200: Color(0xFFFFCC80),
-            300: Color(0xFFFFB74D),
-            400: Color(0xFFFFA726),
-            500: Color(0xFFFFA000),
-            600: Color(0xFFFB8C00),
-            700: Color(0xFFF57C00),
-            800: Color(0xFFEF6C00),
-            900: Color(0xFFE65100),
-          },
-        ),
+        primarySwatch: myCustomColor,
       ),
       home: const MainPage(),
     );

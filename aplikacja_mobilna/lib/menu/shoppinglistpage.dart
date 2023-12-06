@@ -15,7 +15,9 @@ class ShoppingListPageState extends State<ShoppingListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lista zakupów'),
+        title: const Text('Lista zakupów',
+                    style: TextStyle(color: Colors.white)),
+                backgroundColor: const Color.fromARGB(248, 103, 16, 216),
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -24,7 +24,9 @@ class Desert extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Desert"),
+        title: const Text("Desert",
+                    style: TextStyle(color: Colors.white)),
+                backgroundColor: const Color.fromARGB(248, 103, 16, 216),
       ),
       body: Column(
         children: [

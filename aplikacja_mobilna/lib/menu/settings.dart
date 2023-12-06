@@ -68,35 +68,52 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Settings'),
-        ),
-        body: Column(
-          children: [
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              MaterialButton(
+      appBar: AppBar(
+        title: const Text('Settings', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(248, 103, 16, 216),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ElevatedButton(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
                   Navigator.of(context).pop();
                 },
-                color: Colors.deepPurple[200],
-                child: const Text('sign out'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple[200],
+                  padding: const EdgeInsets.symmetric(vertical: 18.0),
+                ),
+                child:
+                    const Text('Wyloguj się', style: TextStyle(fontSize: 20)),
               ),
-              const SizedBox(height: 20), // Проміжок для відокремлення кнопок
-              MaterialButton(
-                onPressed:
-                    _navigateToEditProfilePage, // Виклик функції для переходу
-                color: Colors.blue[200],
-                child: const Text('Edit Profile'),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _navigateToEditProfilePage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[200],
+                  padding: const EdgeInsets.symmetric(vertical: 18.0),
+                ),
+                child:
+                    const Text('Edytuj profil', style: TextStyle(fontSize: 20)),
               ),
-              const SizedBox(height: 20), // Проміжок для відокремлення кнопок
-              MaterialButton(
+              const SizedBox(height: 20),
+              ElevatedButton(
                 onPressed: _deleteAccount,
-                color: Colors.red[200],
-                child: const Text('Delete Account'),
-              )
-            ])
-          ],
-        ));
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[200],
+                  padding: const EdgeInsets.symmetric(vertical: 18.0),
+                ),
+                child: const Text('Usuń konto', style: TextStyle(fontSize: 20)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

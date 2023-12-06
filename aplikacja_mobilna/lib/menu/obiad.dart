@@ -24,7 +24,8 @@ class Obiad extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Obiad"),
+        title: const Text("Obiad", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(248, 103, 16, 216),
       ),
       body: Column(
         children: [
